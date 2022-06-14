@@ -48,13 +48,13 @@ class Protokol extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'companyName' => 'Наименование предприятия',
+            'companyName' => 'Предприятие',
             'detailPrikaz' => 'Приказ',
             'detailComission' => 'Комиссия',
-            'obuchenieName' => 'Программа обучения',
+            'obuchenieName' => 'Обучение',
             'idUser' => 'Id User',
             'userResult' => 'Результаты',
-            'detailReestr' => 'Дата регистрации',
+            'detailReestr' => 'Дата',
         ];
     }
 

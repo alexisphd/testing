@@ -6,6 +6,7 @@ use app\models\Category;
 use app\models\Checkout;
 use app\models\CheckoutSearch;
 use app\models\User;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,7 +21,33 @@ class CabinetController extends UserController
      */
     public function behaviors()
     {
-        return array_merge(
+
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'create', 'view', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'delete', 'create', 'update'],
+                        'roles' => ['@'],
+
+
+                    ],
+                /*    [
+                        'allow' => true,
+                        'actions' => ['create', 'update'],
+                        'roles' => ['@'],
+                        'matchCallback'=>function($rule, $action){
+                            return \Yii::$app->user->identity->isAdmin();
+                        }
+
+                    ],*/
+
+                ],
+            ],
+        ];
+      /*  return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
@@ -30,7 +57,7 @@ class CabinetController extends UserController
                     ],
                 ],
             ]
-        );
+        );*/
     }
 
     /**

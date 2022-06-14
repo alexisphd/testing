@@ -3,7 +3,8 @@
 namespace app\controllers;
 
 use app\models\Fire;
-use app\models\FireSearch;
+use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -18,7 +19,26 @@ class FireController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'create', 'view', 'update', 'delete'],
+                'rules' => [
+
+                    [
+                        'allow' => true,
+                        'actions' => ['index','create', 'update', 'delete', 'view'],
+                        'roles' => ['@'],
+                        'matchCallback'=>function($rule, $action){
+                            return \Yii::$app->user->identity->isAdmin();
+                        }
+
+                    ],
+
+                ],
+            ],
+        ];
+       /* return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
@@ -28,7 +48,7 @@ class FireController extends Controller
                     ],
                 ],
             ]
-        );
+        );*/
     }
 
     /**
@@ -36,14 +56,25 @@ class FireController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex($risk=0)
     {
-        $searchModel = new FireSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $dataProvider = new ActiveDataProvider([
+            'query' => Fire::find(),
+            /*
+            'pagination' => [
+                'pageSize' => 50
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'id' => SORT_DESC,
+                ]
+            ],
+            */
+        ]);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'risk'=>$risk,
         ]);
     }
 
@@ -130,5 +161,41 @@ class FireController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionCalculate()
+    {
+        $model = new Fire();
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post())) {
+                $raw = $this->request->post();
+                $class = $raw['Fire']['class'];
+                $chastotaFire = $raw['Fire']['chastotaFire'];
+                $escapedPeople = $raw['Fire']['escapedPeople'];
+                $unescapedPeople = $raw['Fire']['unescapedPeople'];
+                $smogDefence = $raw['Fire']['smogDefence'];
+                $fireDefence = $raw['Fire']['fireDefence'];
+                $alarmSystem = $raw['Fire']['alarmSystem'];
+                $fireStationNear = $raw['Fire']['fireStationNear'];
+                $fireThings = $raw['Fire']['fireThings'];
+                $fireFreeEscapes = $raw['Fire']['fireFreeEscapes'];
+                $timeOnwork = $raw['Fire']['timeOnwork'];
+                $escapeTime = $raw['Fire']['escapeTime'];
+                $escapeBlocking = $raw['Fire']['escapeBlocking'];
+                $startEscape = $raw['Fire']['startEscape'];
+                $timeZator = $raw['Fire']['timeZator'];
+                if ($escapeTime < (0.8 * $escapeBlocking) && $escapeTime < ($escapeTime + $startEscape) && $timeZator < 6)
+                    $risk = $chastotaFire * (1 - $fireDefence) * ($timeOnwork / 24) * (1 - (1 - $smogDefence * $alarmSystem) * (1 - (0.8 * $escapeBlocking - $escapeTime) / $startEscape));
+                elseif ((0.8 * $escapeBlocking) >= ($escapeTime + $startEscape) && $timeZator <= 6)
+                    $risk = $chastotaFire * (1 - $fireDefence) * ($timeOnwork / 24) * (1 - (1 - $smogDefence * $alarmSystem) * (0.001));
+                else
+                    $risk = $chastotaFire * (1 - $fireDefence) * ($timeOnwork / 24) * (1 - (1 - $smogDefence * $alarmSystem));
+
+                return $this->redirect(['fire/index', 'risk' => $risk]);
+
+
+            }
+        }
+        return 'Ошибка в данных';
     }
 }

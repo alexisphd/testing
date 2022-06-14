@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Library;
 use app\models\LibrarySearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -20,7 +21,32 @@ class LibraryController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'create', 'view', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index','view'],
+                        'roles' => ['@'],
+
+
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'update', 'delete'],
+                        'roles' => ['@'],
+                        'matchCallback'=>function($rule, $action){
+                            return \Yii::$app->user->identity->isAdmin();
+                        }
+
+                    ],
+
+                ],
+            ],
+        ];
+      /*  return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
@@ -30,7 +56,7 @@ class LibraryController extends Controller
                     ],
                 ],
             ]
-        );
+        );*/
     }
 
     /**

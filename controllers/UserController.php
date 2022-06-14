@@ -8,6 +8,7 @@ use app\models\Obligation;
 use app\models\Position;
 use app\models\User;
 use app\models\UserSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,7 +23,36 @@ class UserController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
+        return [
+        'access' => [
+        'class' => AccessControl::class,
+        'only' => ['login', 'logout', 'signup', 'create', 'update', 'delete', 'view', 'index'],
+        'rules' => [
+            [
+                'allow' => true,
+                'actions' => ['login', 'signup'],
+                'roles' => ['?'],
+            ],
+            [
+                'allow' => true,
+                'actions' => ['logout'],
+                'roles' => ['@'],
+            ],
+            [
+                'allow' => true,
+                'actions' => ['create', 'update', 'delete', 'view', 'index'],
+                'roles' => ['@'],
+                'matchCallback'=>function($rule, $action){
+            return \Yii::$app->user->identity->isAdmin();
+                }
+
+            ],
+
+        ],
+    ],
+            ];
+
+        /*return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
@@ -32,7 +62,7 @@ class UserController extends Controller
                     ],
                 ],
             ]
-        );
+        );*/
     }
 
     /**

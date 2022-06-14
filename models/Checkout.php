@@ -45,9 +45,9 @@ class Checkout extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'Номер',
-            'idUser' => 'Пользователь',
+            'idUser' => 'Сотрудник',
             'idCategory' => 'Тема',
-            'result' => 'Результат',
+            'result' => 'Правильно',
         ];
     }
 

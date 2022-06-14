@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Department;
 use app\models\DepartmentSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -18,7 +19,26 @@ class DepartmentController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'create', 'view', 'update', 'delete'],
+                'rules' => [
+
+                    [
+                        'allow' => true,
+                        'actions' => ['index','create', 'update', 'delete', 'view'],
+                        'roles' => ['@'],
+                        'matchCallback'=>function($rule, $action){
+                            return \Yii::$app->user->identity->isAdmin();
+                        }
+
+                    ],
+
+                ],
+            ],
+        ];
+        /*return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
@@ -28,7 +48,7 @@ class DepartmentController extends Controller
                     ],
                 ],
             ]
-        );
+        );*/
     }
 
     /**

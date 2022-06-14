@@ -7,6 +7,7 @@ use app\models\Protokol;
 use app\models\ProtokolSearch;
 use app\models\User;
 use Yii;
+use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -22,7 +23,26 @@ class ProtokolController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'create', 'view', 'update', 'delete'],
+                'rules' => [
+
+                    [
+                        'allow' => true,
+                        'actions' => ['index','create', 'update', 'delete', 'view'],
+                        'roles' => ['@'],
+                        'matchCallback'=>function($rule, $action){
+                            return \Yii::$app->user->identity->isAdmin();
+                        }
+
+                    ],
+
+                ],
+            ],
+        ];
+        /*return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
@@ -32,7 +52,7 @@ class ProtokolController extends Controller
                     ],
                 ],
             ]
-        );
+        );*/
     }
 
     /**

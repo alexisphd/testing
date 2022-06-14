@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div class="fire-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['action' => 'calculate']); ?>
 
     <?= $form->field($model, 'class')->textInput(['maxlength' => true]) ?>
 
@@ -32,8 +32,18 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'fireFreeEscapes')->textInput() ?>
 
+    <?= $form->field($model, 'timeOnwork')->textInput() ?>
+
+    <?= $form->field($model, 'escapeTime')->textInput() ?>
+
+    <?= $form->field($model, 'escapeBlocking')->textInput() ?>
+
+    <?= $form->field($model, 'startEscape')->textInput() ?>
+
+    <?= $form->field($model, 'timeZator')->textInput() ?>
+
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Рассчитать', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

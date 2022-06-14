@@ -38,7 +38,7 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav'],
         'items' => [
             ['label' => 'О приложении', 'url' => ['/site/about']],
-            ['label' => 'Регистрация', 'url' => ['/user/create'], 'visible'=>Yii::$app->user->isGuest],
+       //     ['label' => 'Регистрация', 'url' => ['/user/create'], 'visible'=>Yii::$app->user->isGuest],
             ['label' => 'Панель специалиста по ОТ', 'url' => ['/admin'], 'visible'=>!Yii::$app->user->isGuest&&Yii::$app->user->identity->isAdmin()],
             ['label' => 'Панель пользователя', 'url' => ['/cabinet'], 'visible'=>!Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin()],
 

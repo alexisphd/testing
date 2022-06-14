@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => 'category.name'],
           //  'idCategory',
             'result',
-            ['attribute' => 'Total questions',
+            ['attribute' => 'Вопросов',
                 'value' => function(){
         return \app\models\Question::find()->select('id')->count();
                 }],

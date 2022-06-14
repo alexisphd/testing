@@ -7,6 +7,7 @@ use app\models\Checkout;
 use app\models\CheckoutSearch;
 use app\models\Question;
 use yii\base\BaseObject;
+use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -22,7 +23,32 @@ class CheckoutController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'create', 'view', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'view'],
+                        'roles' => ['@'],
+
+
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['create', 'update', 'delete', 'index'],
+                        'roles' => ['@'],
+                        'matchCallback'=>function($rule, $action){
+                            return \Yii::$app->user->identity->isAdmin();
+                        }
+
+                    ],
+
+                ],
+            ],
+        ];
+       /* return array_merge(
             parent::behaviors(),
             [
                 'verbs' => [
@@ -32,7 +58,7 @@ class CheckoutController extends Controller
                     ],
                 ],
             ]
-        );
+        );*/
     }
 
     /**
@@ -90,7 +116,7 @@ class CheckoutController extends Controller
             $model->result=$result;
             $model->save(); //false если без валидации
 
-            return $this->redirect(['checkout/index', 'result'=>$result]);
+            return $this->redirect(['cabinet/index', 'result'=>$result]);
         } else {
             $model->loadDefaultValues();
         }
