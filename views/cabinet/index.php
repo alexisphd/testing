@@ -17,16 +17,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
+    <div class="btn-group">
         <?= Html::a('Пройти тест', ['/checkout/create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Обучающие материалы', ['/library/index'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Задать вопрос', ['site/contact'], ['class' => 'btn btn-success']) ?>
-    </p>
+</div>
 
 
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-    <div class="table-responsive">
+    <div class="table-responsive table-sm">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
        // 'filterModel' => $searchModel,

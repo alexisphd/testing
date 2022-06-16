@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-    <div class="table-responsive">
+    <div class="table-responsive table-sm">
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
